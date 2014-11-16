@@ -1,5 +1,8 @@
 //Program 1
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -10,6 +13,10 @@ public class DBConnect {
     private Statement st;
     private ResultSet rs;
     private String query;
+    
+    private File file = new File("/home/chiran/Desktop/mylog.log");
+    private FileWriter writer;
+    private BufferedWriter bwriter;
     
     private final String pw = "mysql";
     
@@ -129,7 +136,21 @@ public class DBConnect {
             
             preparedStmt.executeUpdate();
             
-            System.out.println(date + "\t" + time + "\tiptables -A INPUT -s " + s + " -j DROP");
+            String myStr = date + "\t" + time + "\tiptables -A INPUT -s " + s + " -j DROP";
+            
+            if(!file.exists()){
+                
+    		file.createNewFile();
+                        
+            }
+            
+            System.out.println(myStr);
+            
+            writer = new FileWriter(file.getAbsolutePath(),true);
+            bwriter = new BufferedWriter(writer);
+            bwriter.write(myStr+"\n");
+            bwriter.close();
+            
             
         }catch(Exception ex){
             
