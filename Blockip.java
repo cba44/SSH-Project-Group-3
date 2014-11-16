@@ -9,7 +9,7 @@ class Blockip {
     
         String fileName = "auth_new.log";
         ExtractIP word;
-        DBCreate dbcon = new DBCreate();    //Creating the database, table if they don't exist
+        DBCreate dbcon = new DBCreate();    //Creating the database, table if it doesn't exist
         
         ArrayList <Iplist> myIPlist = new ArrayList <Iplist>();
   
@@ -30,22 +30,28 @@ class Blockip {
                 
                     if (s.length != 1 && (!s[s.length - 1].equals("[preauth]"))){    //IP addresses when [preauth] is not there
                     
-                        for(int i=0; i < s.length; i++){
-                            String [] l = s[i].split(":");      //Some lines have ":" after the ip address
-                        
-                            for(int k=0; k < l.length; k++){
-                        
-                                word = new ExtractIP(l[k]);     
+                        if (s[6].equals("Invalid") || (s[6].equals("error:") && s[7].equals("PAM:"))){
                             
-                                if (word.matchIP()){        //If word matches with the IP address regular expression, ipContains method called
-                                
-                                    ipContains(myIPlist,l[k]);      //If there is same invalid IP 5 times, it will be blocked
-                                
+//                            System.out.println(line);
+                        
+                            for(int i=0; i < s.length; i++){
+                                String [] l = s[i].split(":");      //Some lines have ":" after the ip address
+
+                                for(int k=0; k < l.length; k++){
+
+                                    word = new ExtractIP(l[k]);     
+
+                                    if (word.matchIP()){        //If word matches with the IP address regular expression, ipContains method called
+
+                                        ipContains(myIPlist,l[k]);      //If there is same invalid IP 5 times, it will be blocked
+
+                                    }
+
                                 }
-                                                        
-                            }
-                    
-                        }   
+
+                            } 
+                            
+                        }
                     
                     }
                 
@@ -92,17 +98,12 @@ class Blockip {
                 
                 count = a.get(i).getCount();
                 
-                if (count == 5 && !connect.contIP(s)){      //When IP caught 5 times and still isn't in array list...
+                if (count == 5){      //When IP caught 5 times and still isn't in array list...
                     
                     connect = new DBConnect();
-                    a.remove(i);        //Deleting IP from the array list
                     connect.addData(s);     //Adding IP to database
+                    a.remove(i);        //Deleting IP from the array list
                     
-                    return;
-                    
-                }else if(count == 5 && connect.contIP(s)){      //When IP caught 5 times and it is in array list...
-                    
-                    a.remove(i);    //Deleting IP from the array list
                     return;
                     
                 }else{
@@ -116,9 +117,14 @@ class Blockip {
             
         }
         
-        myIP = new Iplist (s);  
-        a.add(myIP);    //If IP is not in array list, inserting it
+        if (!connect.contIP(s)){
+        
+            myIP = new Iplist (s);  
+            a.add(myIP);    //If IP is not in array list and not in database , inserting it
+        
+        }
         
     }
     
 }
+
