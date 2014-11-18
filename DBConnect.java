@@ -1,5 +1,7 @@
 //Program 1
 
+package ssh;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
