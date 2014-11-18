@@ -1,5 +1,7 @@
 //Program 1
 
+package ssh;
+
 import java.util.regex.*;
 
 public class ExtractIP {
