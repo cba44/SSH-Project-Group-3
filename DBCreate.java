@@ -22,7 +22,7 @@ public class DBCreate {
 
                 Class.forName("com.mysql.jdbc.Driver");
 
-                con = DriverManager.getConnection("jdbc:mysql://localhost:3306","root",pw);System.out.println("connection is "+st);
+                con = DriverManager.getConnection("jdbc:mysql://localhost:3306","root",pw);
                 st = con.createStatement();
 
                 query = "CREATE DATABASE IF NOT EXISTS sshblock";     //Creating DB if doesn't exist      
