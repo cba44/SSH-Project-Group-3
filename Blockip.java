@@ -1,13 +1,20 @@
 //Program 1 Blockip.java contains main method
 
+package ssh;
+
 import java.io.*;
 import java.util.ArrayList;
+import org.apache.commons.daemon.*;
 
-class Blockip {
+public class Blockip implements Daemon {
     
     public static void main(String [] args){
+        
+        File fileName = new File("/home/chiran/log/auth_new.log");
+        FileReader fileRd;
+        BufferedReader bufferRd;
     
-        String fileName = "auth_new.log";
+     //   String fileName = "auth_new.log";
         ExtractIP word;
         DBCreate dbcon = new DBCreate();    //Creating the database, table if it doesn't exist
         
@@ -15,8 +22,8 @@ class Blockip {
   
         try {
             
-	    FileReader fileRd = new FileReader(fileName); 
-	    BufferedReader bufferRd = new BufferedReader(fileRd);
+	    fileRd = new FileReader(fileName.getAbsolutePath()); 
+	    bufferRd = new BufferedReader(fileRd);
             
 	    String line = null;
             
@@ -43,7 +50,7 @@ class Blockip {
 
                                     if (word.matchIP()){        //If word matches with the IP address regular expression, ipContains method called
 
-                                        ipContains(myIPlist,l[k]);      //If there is same invalid IP 5 times, it will be blocked
+                                        ipContains(myIPlist,l[k],s[0],s[2],s[3]);      //If there is same invalid IP 5 times, it will be blocked
 
                                     }
 
@@ -81,11 +88,34 @@ class Blockip {
 	    System.out.println(x);
 	    System.exit(-1);
             
-	} 
+	}
     
     }
     
-    private static void ipContains(ArrayList <Iplist> a,String s){
+    //http://stackoverflow.com/questions/7687159/how-to-convert-a-java-program-to-daemon-with-jsvc
+    
+    @Override
+    public void init(DaemonContext dc) throws DaemonInitException, Exception {
+        System.out.println("initializing ...");
+    }
+    
+    @Override
+    public void start() throws Exception {
+        System.out.println("starting ...");
+        main(null);     //Running the main method
+    }
+
+    @Override
+    public void stop() throws Exception {
+        System.out.println("stopping ...");
+    }
+
+    @Override
+    public void destroy() {
+        System.out.println("done.");
+    }
+    
+    private static void ipContains(ArrayList <Iplist> a,String s,String str1,String str2,String str3){
         
         Iplist myIP;
         DBConnect connect = new DBConnect();    //Creating connection with the database and table
@@ -119,7 +149,7 @@ class Blockip {
         
         if (!connect.contIP(s)){
         
-            myIP = new Iplist (s);  
+            myIP = new Iplist (s,str1,str2,str3);  
             a.add(myIP);    //If IP is not in array list and not in database , inserting it
         
         }
