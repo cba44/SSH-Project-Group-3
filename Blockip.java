@@ -1,5 +1,3 @@
-//Program 1 Blockip.java contains main method
-
 package ssh;
 
 import java.io.*;
@@ -37,9 +35,9 @@ public class Blockip implements Daemon {
                 
                     if (s.length != 1 && (!s[s.length - 1].equals("[preauth]"))){    //IP addresses when [preauth] is not there
                     
-                        if (s[6].equals("Invalid") || (s[6].equals("error:") && s[7].equals("PAM:"))){
+                        if (s[5].equals("Invalid") || s[6].equals("Invalid") || (s[6].equals("error:") && s[7].equals("PAM:")) || (s[5].equals("error:") && s[6].equals("PAM:"))){
                             
-//                            System.out.println(line);
+                    //        System.out.println(line);
                         
                             for(int i=0; i < s.length; i++){
                                 String [] l = s[i].split(":");      //Some lines have ":" after the ip address
@@ -50,8 +48,18 @@ public class Blockip implements Daemon {
 
                                     if (word.matchIP()){        //If word matches with the IP address regular expression, ipContains method called
 
-                                        ipContains(myIPlist,l[k],s[0],s[2],s[3]);      //If there is same invalid IP 5 times, it will be blocked
+                                        if (s[5].equals("Invalid") || s[5].equals("error:")){
+                                            
+                                            String [] monthSp = s[0].split(":");
+                                            
+                                            ipContains(myIPlist,l[k],monthSp[1],s[1],s[2]);
+                                            
+                                        }else{
+                                            
+                                            ipContains(myIPlist,l[k],s[0],s[2],s[3]);      //If there is same invalid IP 5 times, it will be blocked
 
+                                        }
+                                            
                                     }
 
                                 }
@@ -62,17 +70,17 @@ public class Blockip implements Daemon {
                     
                     }
                 
-        	}else {     //To daemonize the program
+       	}else {     //To daemonize the program
                     
-                    try{
+                /*    try{
                     
                         Thread.sleep(1000); //http://stackoverflow.com/questions/557844/java-io-implementation-of-unix-linux-tail-f
                         
                     }catch(Exception ex){
                         
-                        System.out.println(ex);
+                        System.out.println(ex);*/break;
                         
-                    }
+    //                }
                     
                 }
             
@@ -157,4 +165,3 @@ public class Blockip implements Daemon {
     }
     
 }
-
