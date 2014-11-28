@@ -1,5 +1,3 @@
-//Program 1
-
 package ssh;
 
 import java.io.BufferedWriter;
@@ -16,6 +14,11 @@ public class DBConnect {
     private ResultSet rs;
     private String query;
     
+    private Connection con1;
+    private Statement st1;
+    private ResultSet rs1;
+    private String query1;
+    
     private File file = new File("/home/chiran/Desktop/mylog.log");
     private FileWriter writer;
     private BufferedWriter bwriter;
@@ -30,6 +33,9 @@ public class DBConnect {
             
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/sshblock","root",pw);
             st = con.createStatement();
+            
+            con1 = DriverManager.getConnection("jdbc:mysql://localhost:3306/googlemap","root",pw);
+            st1 = con1.createStatement();
             
         }catch(Exception ex){
             
@@ -86,10 +92,13 @@ public class DBConnect {
         try{
             
             query = "INSERT INTO blockedIP VALUES (?, ?, ?, ?, ?);";
+            query1 = "INSERT IGNORE INTO reportIP VALUES (?, ?, ?);";
             
             PreparedStatement preparedStmt = con.prepareStatement(query);
+            PreparedStatement preparedStmt1 = con1.prepareStatement(query1);
             
             preparedStmt.setString (1, s);
+            preparedStmt1.setString (1, s);
             
             java.sql.Time time = getCurrentJavaSqlTime();       //System.out.println(time);
             java.sql.Date date = getCurrentJavaSqlDate();       //System.out.println(date);
@@ -132,11 +141,17 @@ public class DBConnect {
             }else date1 = date;
             
             preparedStmt.setDate (2,date);
+            preparedStmt1.setDate (2,date);
+            
             preparedStmt.setTime (3,time);
+            preparedStmt1.setTime (3,time);
+            
             preparedStmt.setDate (4,date1);
+            
             preparedStmt.setTime (5,time1);  
             
             preparedStmt.executeUpdate();
+            preparedStmt1.executeUpdate();
             
             String myStr = date + "\t" + time + "\tiptables -A INPUT -s " + s + " -j DROP";
             
