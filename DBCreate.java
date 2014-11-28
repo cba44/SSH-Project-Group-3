@@ -1,5 +1,3 @@
-//Program 1
-
 package ssh;
 
 import java.sql.*;
@@ -45,6 +43,22 @@ public class DBCreate {
 
                 query = "SET global max_connections = 100000";            
                 st.executeUpdate(query);
+                
+                query = "CREATE DATABASE IF NOT EXISTS googlemap";     //Creating DB if doesn't exist      
+                st.executeUpdate(query);
+
+                query = "USE googlemap";
+                st.executeUpdate(query);
+
+                //Creating table if doesn't exist
+
+                query = "CREATE TABLE IF NOT EXISTS reportIP(\n" +
+                        "    IPAddress VARCHAR (15) PRIMARY KEY,\n" +
+                        "    BlockedDate DATE NOT NULL,\n" +
+                        "    BlockedTime TIME NOT NULL\n" +
+                        ")";
+
+                st.executeUpdate(query);
 
                 break;
 
@@ -60,4 +74,3 @@ public class DBCreate {
     }
     
 }
-
