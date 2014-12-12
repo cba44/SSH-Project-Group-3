@@ -27,22 +27,27 @@ public class DBConnect {
     
     public DBConnect(){
         
-        try{
-            
-            Class.forName("com.mysql.jdbc.Driver");
-            
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/sshblock","root",pw);
-            st = con.createStatement();
-            
-            con1 = DriverManager.getConnection("jdbc:mysql://localhost:3306/googlemap","root",pw);
-            st1 = con1.createStatement();
-            
-        }catch(Exception ex){
-            
-            System.out.println(ex);
-            
-        }
+        while(true){    //If there is an error, continously trying to connect
         
+            try{
+
+                Class.forName("com.mysql.jdbc.Driver");
+
+                con = DriverManager.getConnection("jdbc:mysql://localhost:3306/sshblock","root",pw);
+                st = con.createStatement();
+
+                con1 = DriverManager.getConnection("jdbc:mysql://localhost:3306/googlemap","root",pw);
+                st1 = con1.createStatement();
+                break;
+
+            }catch(Exception ex){
+
+                //System.out.println(ex);
+
+            }
+        
+        }       
+            
     }
     
     public void getData(){      //Selecting every data from database
@@ -194,7 +199,7 @@ public class DBConnect {
                    
                }
             
-            };
+            }
                
         }catch (Exception ex){
                
@@ -203,6 +208,34 @@ public class DBConnect {
         }
     
         return false;
+        
+    }
+    
+    public void subnetInsert(String ip , String str1 , String str2){
+        
+        try{
+        
+            query = "INSERT IGNORE INTO subnets VALUES (?, ?, ?, ?, ?);";
+
+            PreparedStatement preparedStmt = con.prepareStatement(query);
+            
+            preparedStmt.setString (1, ip);
+            preparedStmt.setString (2, str1);
+            preparedStmt.setString (3, str2);
+            
+            java.sql.Time time = getCurrentJavaSqlTime();
+            java.sql.Date date = getCurrentJavaSqlDate();
+            
+            preparedStmt.setDate (4,date);
+            preparedStmt.setTime (5,time);
+            
+            preparedStmt.executeUpdate();
+        
+        }catch(Exception ex){
+            
+            System.out.println(ex);
+            
+        }
         
     }
     
