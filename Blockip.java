@@ -72,15 +72,15 @@ public class Blockip implements Daemon {
                 
        	}else {     //To daemonize the program
                     
-                /*    try{
+                    try{
                     
                         Thread.sleep(1000); //http://stackoverflow.com/questions/557844/java-io-implementation-of-unix-linux-tail-f
                         
                     }catch(Exception ex){
                         
-                        System.out.println(ex);*/break;
+                        System.out.println(ex);
                         
-    //                }
+                    }
                     
                 }
             
@@ -127,6 +127,7 @@ public class Blockip implements Daemon {
         
         Iplist myIP;
         DBConnect connect = new DBConnect();    //Creating connection with the database and table
+        IPCal ipcal = new IPCal();
         
         for (int i = 0 ; i < a.size() ; i++){
             
@@ -141,6 +142,10 @@ public class Blockip implements Daemon {
                     connect = new DBConnect();
                     connect.addData(s);     //Adding IP to database
                     a.remove(i);        //Deleting IP from the array list
+                    long l = ipcal.IPint(s);
+                    String range = ipcal.findRange(l);
+                    String [] str = range.split(" ");
+                    connect.subnetInsert(s, str[0], str[1]);
                     
                     return;
                     
