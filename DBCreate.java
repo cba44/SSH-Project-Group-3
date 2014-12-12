@@ -1,7 +1,6 @@
 package ssh;
 
 import java.sql.*;
-import java.util.concurrent.TimeUnit;
 
 public class DBCreate {
     
@@ -39,6 +38,16 @@ public class DBCreate {
                         "    ReleaseTime TIME NOT NULL\n" +
                         ")";
 
+                st.executeUpdate(query);
+                
+                query = "CREATE TABLE IF NOT EXISTS subnets(\n" +
+                        "    IPAddress VARCHAR (15) PRIMARY KEY,\n" +
+                        "    IPrangeStart VARCHAR (15),\n" +
+                        "    IPrangeEnd VARCHAR (15),\n" +
+                        "    AddedDate DATE NOT NULL,\n" +
+                        "    AddedTime TIME NOT NULL" +
+                        ")";
+                
                 st.executeUpdate(query);
 
                 query = "SET global max_connections = 100000";            
